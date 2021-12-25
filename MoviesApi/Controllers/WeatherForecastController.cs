@@ -20,7 +20,7 @@ namespace MoviesApi.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get(int id)
+        public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
@@ -29,13 +29,6 @@ namespace MoviesApi.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
-        }
-
-        [HttpPost]
-        [Authorize]
-        public IActionResult Create(WeatherForecast dto)
-        {
-            return Ok();
         }
     }
 }
