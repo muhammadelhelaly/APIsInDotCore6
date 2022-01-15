@@ -62,5 +62,6 @@ namespace MoviesApi.Controllers
 
             return Ok(genre);
         }
+
     }
 }
