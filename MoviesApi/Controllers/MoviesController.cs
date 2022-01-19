@@ -40,6 +40,52 @@ namespace MoviesApi.Controllers
             return Ok(movies);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(int id)
+        {
+            var movie = await _context.Movies.Include(m => m.Genre).SingleOrDefaultAsync(m => m.Id == id);
+
+            if(movie == null)
+                return NotFound();
+
+            var dto = new MovieDetailsDto
+            {
+                Id = movie.Id,
+                GenreId = movie.GenreId,
+                GenreName = movie.Genre.Name,
+                Poster = movie.Poster,
+                Rate = movie.Rate,
+                Storeline = movie.Storeline,
+                Title = movie.Title,
+                Year = movie.Year
+            };
+
+            return Ok(dto);
+        }
+
+        [HttpGet("GetByGenreId")]
+        public async Task<IActionResult> GetByGenreIdAsync(byte genreId)
+        {
+            var movies = await _context.Movies
+                .Where(m => m.GenreId == genreId)
+                .OrderByDescending(x => x.Rate)
+                .Include(m => m.Genre)
+                .Select(m => new MovieDetailsDto
+                {
+                    Id = m.Id,
+                    GenreId = m.GenreId,
+                    GenreName = m.Genre.Name,
+                    Poster = m.Poster,
+                    Rate = m.Rate,
+                    Storeline = m.Storeline,
+                    Title = m.Title,
+                    Year = m.Year
+                })
+                .ToListAsync();
+
+            return Ok(movies);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] MovieDto dto)
         {
